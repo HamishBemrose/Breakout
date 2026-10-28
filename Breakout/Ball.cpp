@@ -32,7 +32,7 @@ void Ball::update(float dt)
         }        
     }
 
-    // Fireball effect
+    // Fireball effect visual 
     if (_isFireBall)
     {
         // Flickering effect
@@ -51,12 +51,16 @@ void Ball::update(float dt)
     if ((position.x >= windowDimensions.x - 2 * RADIUS && _direction.x > 0) || (position.x <= 0 && _direction.x < 0))
     {
         _direction.x *= -1;
+
+		_gameManager->startShake(0.1f, 8.f, sf::Vector2f(_direction.x, 0.f)); // Shake effect on wall collision
     }
 
     // bounce on ceiling
     if (position.y <= 0 && _direction.y < 0)
     {
         _direction.y *= -1;
+
+		_gameManager->startShake(0.1f, 8.f, sf::Vector2f(0.f, _direction.y)); // Shake effect on ceiling collision
     }
 
     // lose life bounce

@@ -24,7 +24,7 @@ void GameManager::initialize()
     _powerupManager = new PowerupManager(_window, _paddle, _ball);
     _ui = new UI(_window, _lives, this);
 
-    // Create bricks
+    // Create bricks in the level
     _brickManager->createBricks(5, 10, 80.0f, 30.0f, 5.0f);
 }
 
@@ -85,6 +85,8 @@ void GameManager::update(float dt)
     _paddle->update(dt);
     _ball->update(dt);
     _powerupManager->update(dt);
+
+	updateShake(dt); // Update the screen shake effect
 }
 
 void GameManager::loseLife()
@@ -92,7 +94,8 @@ void GameManager::loseLife()
     _lives--;
     _ui->lifeLost(_lives);
 
-    // TODO screen shake.
+    //initiates screen shake when life lost. this lasts .2 seconds with am offset of 8px
+	startShake(0.2f, 8.f, sf::Vector2f(0.f,0.f));
 }
 
 void GameManager::render()
@@ -108,6 +111,59 @@ void GameManager::render()
 void GameManager::levelComplete()
 {
     _levelComplete = true;
+}
+
+//ADDITIONS
+void GameManager::startShake(float duration, float magnitude, sf::Vector2f direction)
+{
+	_shakeTimer = duration;
+	_shakeMagnitude = magnitude;
+
+	//normilise directoion in order to apply shake in a non horizantal direction
+	float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+
+    if (length > 0.f) 
+    {
+        shakeDirection = direction / length;
+    }
+    else
+    {
+		shakeDirection = sf::Vector2f(0.f, 0.f); // Default to no direction if the input is zero
+    }
+}
+
+void GameManager::updateShake(float dt)
+{
+	// If the shake timer is active, apply the shake effect
+    if (_shakeTimer > 0.f) {
+
+		//shake time goes down so its not infinite
+		_shakeTimer -= dt;
+
+        if (shakeDirection.x ==0.f && shakeDirection.y == 0.f) {
+
+            // If no specific direction is provided, apply random shake
+            float offsetX = (static_cast<float>(std::rand()) / RAND_MAX * 2.f - 1.f) * _shakeMagnitude;
+            float offsetY = (static_cast<float>(std::rand()) / RAND_MAX * 2.f - 1.f) * _shakeMagnitude;
+
+            // Apply the shake effect by modifying the view's center
+            gameView.setCenter(_originalCenter + sf::Vector2f(offsetX, offsetY));
+        }
+        else {
+            // Apply shake in the specified direction
+			float offsetX = (shakeDirection.x / RAND_MAX * 2.f - 1.f) * _shakeMagnitude;    
+            float offsetY = (shakeDirection.y / RAND_MAX * 2.f - 1.f) * _shakeMagnitude;
+
+            gameView.setCenter(_originalCenter + shakeDirection * _shakeMagnitude);
+		}
+    }
+
+    else {
+		gameView.setCenter(_originalCenter); // Reset to the original center when shake is done
+    }
+
+	_window->setView(gameView);
+
 }
 
 sf::RenderWindow* GameManager::getWindow() const { return _window; }

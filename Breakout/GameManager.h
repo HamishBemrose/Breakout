@@ -49,4 +49,21 @@ private:
 
     static constexpr float PAUSE_TIME_BUFFER = 0.5f;
     static constexpr float POWERUP_FREQUENCY = 7.5f;    // time between minimum powerup spawn
+
+
+    //ADDITIONS 
+private:
+	sf::View gameView;
+
+    float _shakeTimer = 0.f;
+	float _shakeMagnitude = 0.f;
+
+	// Store the original center of the view to reset after shaking
+    sf::Vector2f _originalCenter = _window->getDefaultView().getCenter();
+	sf::Vector2f shakeDirection{ 0.f,0.f }; // Direction of the shake effect
+
+
+public:
+    void startShake(float duration, float magnitude, sf::Vector2f direction);
+    void updateShake(float dt);
 };
