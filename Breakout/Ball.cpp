@@ -28,6 +28,8 @@ void Ball::update(float dt)
         else
         {
             setFireBall(0);    // disable fireball
+            _sprite.setRadius(RADIUS); //resets radius
+			setBombBall(0);    // disable bombball
             _sprite.setFillColor(sf::Color::Cyan);  // back to normal colour.
         }        
     }
@@ -38,6 +40,17 @@ void Ball::update(float dt)
         // Flickering effect
         int flicker = rand() % 50 + 205; // Random value between 205 and 255
         _sprite.setFillColor(sf::Color(flicker, flicker / 2, 0)); // Orange flickering color
+    }
+
+    if (_isBombBall) {
+
+        //change ball colour
+        int flicker = rand() % 50 + 205; // Random value between 205 and 255
+        _sprite.setFillColor(sf::Color(flicker, flicker / 2, 0)); // Orange flickering color
+
+        //change balls radius
+        _sprite.setRadius(RADIUS * 10.f);
+        //_sprite.setPosition(_sprite.getPosition().x, _sprite.getPosition().y);
     }
 
     // Update position with a subtle floating-point error
@@ -85,7 +98,7 @@ void Ball::update(float dt)
 
     // collision with bricks
     int collisionResponse = _gameManager->getBrickManager()->checkCollision(_sprite, _direction);
-    if (_isFireBall) return; // no collisisons when in fireBall mode.
+    if (_isFireBall || _isBombBall) return; // no collisisons when in fireBall or bombBall mode.
     if (collisionResponse == 1)
     {
         _direction.x *= -1; // Bounce horizontally
@@ -117,4 +130,20 @@ void Ball::setFireBall(float duration)
     }
     _isFireBall = false;
     _timeWithPowerupEffect = 0.f;    
+}
+
+void Ball::setBombBall(float duration)
+{
+    if (duration) 
+    {
+        _isBombBall = true;
+		_timeWithPowerupEffect = duration;
+
+		_gameManager->startShake(duration, 12.f, sf::Vector2f(0.f, 0.f)); // Shake effect on bomb ball activation
+        return;
+    }
+
+    _isBombBall = false;
+	_timeWithPowerupEffect = 0.f;   
+
 }

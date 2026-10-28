@@ -64,7 +64,7 @@ void PowerupManager::spawnPowerup()
 
     float spawnX = xDist(_rng);
 
-    switch (rand() % 5)
+    switch (rand() % 1 + 5)
     {
     case 0:
         _powerups.push_back(new PowerupBigPaddle(_window, _paddle, _ball, spawnX));
@@ -80,6 +80,10 @@ void PowerupManager::spawnPowerup()
         break;
     case 4:
         _powerups.push_back(new PowerupFireBall(_window, _paddle, _ball, spawnX));
+        break;
+		//spawns in the bomb powerup, which stops the ball and allows the player to destroy bricks with a bomb effect.
+    case 5:
+        _powerups.push_back(new PowerupBomb(_window, _paddle, _ball, spawnX));
         break;
     }
 
