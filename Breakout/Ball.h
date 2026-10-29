@@ -21,6 +21,7 @@ public:
 private:
     sf::CircleShape _sprite;
     sf::Vector2f _direction;
+    sf::Vector2f _centre;
     sf::RenderWindow* _window;
     float _velocity;
     float _radius;
@@ -28,6 +29,7 @@ private:
     bool _isFireBall;
     bool _isBombBall;
     float _timeWithPowerupEffect;
+    
 
     GameManager* _gameManager;  // Reference to the GameManager
 

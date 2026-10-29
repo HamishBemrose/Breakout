@@ -48,9 +48,14 @@ void Ball::update(float dt)
         int flicker = rand() % 50 + 205; // Random value between 205 and 255
         _sprite.setFillColor(sf::Color(flicker, flicker / 2, 0)); // Orange flickering color
 
+		//gets the ball centre position
+        _centre = sf::Vector2f(_sprite.getPosition() + sf::Vector2f(_sprite.getRadius(), _sprite.getRadius()));
+
         //change balls radius
         _sprite.setRadius(RADIUS * 10.f);
-        //_sprite.setPosition(_sprite.getPosition().x, _sprite.getPosition().y);
+        
+		//keeps the ball centred on the same position
+		_sprite.setPosition(_centre - sf::Vector2f(_sprite.getRadius(), _sprite.getRadius()));
     }
 
     // Update position with a subtle floating-point error
@@ -102,10 +107,12 @@ void Ball::update(float dt)
     if (collisionResponse == 1)
     {
         _direction.x *= -1; // Bounce horizontally
+        _gameManager->startShake(.1f, 4.f, sf::Vector2(0.0f, 0.f));//shake when brik breaks 
     }
     else if (collisionResponse == 2)
     {
         _direction.y *= -1; // Bounce vertically
+        _gameManager->startShake(.1f, 4.f, sf::Vector2(0.0f, 0.f));//shake when brik breaks 
     }
 }
 
@@ -134,12 +141,14 @@ void Ball::setFireBall(float duration)
 
 void Ball::setBombBall(float duration)
 {
+
+
     if (duration) 
     {
         _isBombBall = true;
 		_timeWithPowerupEffect = duration;
 
-		_gameManager->startShake(duration, 12.f, sf::Vector2f(0.f, 0.f)); // Shake effect on bomb ball activation
+		_gameManager->startShake(duration, 20.f, sf::Vector2f(0.f, 0.f)); // Shake effect on bomb ball activation
         return;
     }
 

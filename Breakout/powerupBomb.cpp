@@ -19,8 +19,8 @@ PowerupBomb::~PowerupBomb()
 
 std::pair<POWERUPS, float> PowerupBomb::applyEffect()
 {
-	_ball->setVelocity(0.0f, 2.5f); // Stop the ball
-	_ball->setBombBall(2.5f); // Activate bomb effect for 5 seconds
+	_ball->setVelocity(0.0f, 1.f); // Stop the ball for a second
+	_ball->setBombBall(1.f); // Activate bomb effect for 1 second
 
-	return { bombBall, 2.5f };
+	return { bombBall, 1.0f };
 }
